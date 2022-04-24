@@ -16,9 +16,9 @@
     "type": "text"
   },
   {
-    "title": "country",
+    "title": "Country",
     "type": "dropdown",
-    "api": "http://countryapi.gear.host/v1/Country/getCountries?pLimit=25&pPage=1",
+    "api": "https://restcountries.com/v2/all?fields=name,alpha2Code",
     "multiple": false
   },
   {

@@ -1,0 +1,138 @@
+<div class="toolbar" role="banner">
+  <a routerLink="/">
+    <img
+      width="70"
+      alt="Sary Logo"
+      src="https://sary.com/img/logo-solid-en.0eb95a6f.svg"
+    />
+  </a>
+  <span>Heroes Dashboard</span>
+  <div class="spacer"></div>
+  <a
+    aria-label="Sary on twitter"
+    target="_blank"
+    rel="noopener"
+    href="https://twitter.com/trysaryapp"
+    title="Twitter"
+  >
+    <svg
+      id="twitter-logo"
+      height="24"
+      data-name="Logo"
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 400 400"
+    >
+      <rect width="400" height="400" fill="none" />
+      <path
+        d="M153.62,301.59c94.34,0,145.94-78.16,145.94-145.94,0-2.22,0-4.43-.15-6.63A104.36,104.36,0,0,0,325,122.47a102.38,102.38,0,0,1-29.46,8.07,51.47,51.47,0,0,0,22.55-28.37,102.79,102.79,0,0,1-32.57,12.45,51.34,51.34,0,0,0-87.41,46.78A145.62,145.62,0,0,1,92.4,107.81a51.33,51.33,0,0,0,15.88,68.47A50.91,50.91,0,0,1,85,169.86c0,.21,0,.43,0,.65a51.31,51.31,0,0,0,41.15,50.28,51.21,51.21,0,0,1-23.16.88,51.35,51.35,0,0,0,47.92,35.62,102.92,102.92,0,0,1-63.7,22A104.41,104.41,0,0,1,75,278.55a145.21,145.21,0,0,0,78.62,23"
+        fill="white"
+      />
+    </svg>
+  </a>
+  <a
+    aria-label="Sary Website"
+    target="_blank"
+    rel="noopener"
+    href="https://sary.com/"
+    title="YouTube"
+  >
+    <img src="assets/internet.svg" alt="Sary website" height="24" />
+  </a>
+</div>
+
+<!-- Main Content -->
+<div class="content" role="main">
+  <section class="filters" #filtersDiv>
+    <h2>Filters</h2>
+    <hr />
+    <ng-container *ngFor="let filter of filters; let index">
+      <mat-form-field class="form-field" *ngIf="filter.type !== 'dropdown'">
+        <mat-label>{{ filter.title }}</mat-label>
+        <input matInput type="{{ filter.type }}" />
+
+        <mat-icon matSuffix (click)="email = ''" *ngIf="email" class="clear"
+          >close</mat-icon
+        >
+      </mat-form-field>
+      <mat-form-field class="form-field" *ngIf="filter.type === 'dropdown'">
+        <mat-label>{{ filter.title }}</mat-label>
+        <mat-select>
+          <mat-option
+            value="{{ country.alpha3Code }}"
+            *ngFor="let country of countriesList"
+            >{{ country.name }}</mat-option
+          >
+        </mat-select>
+      </mat-form-field>
+    </ng-container>
+    <button mat-button class="filter-btn">
+      <mat-icon>filter_list</mat-icon>
+      Filter
+    </button>
+  </section>
+  <section class="results" #resultsDiv>
+    <div class="table-title">
+      <div class="title">
+        <h2>Heroes</h2>
+      </div>
+      <div class="icons">
+        <mat-icon (click)="triggerCollapse()">
+          {{ "fullscreen" + (filtersCollapsed ? "_exit" : "") }}
+        </mat-icon>
+        <mat-form-field class="form-field" *ngIf="searchClicked">
+          <mat-label>Search</mat-label>
+          <input matInput type="text" (input)="searchHeroes($event)" />
+        </mat-form-field>
+        <mat-icon matSuffix (click)="triggerSearch()">search</mat-icon>
+        <mat-icon matSuffix (click)="sortHeroes()">tune</mat-icon>
+      </div>
+    </div>
+    <table
+      mat-table
+      [dataSource]="searchResults || sortedHeroes || heroes"
+      class="mat-elevation-z8"
+    >
+      <!--- Note that these columns can be defined in any order.
+            The actual rendered columns are set as a property on the row definition" -->
+
+      <!-- Position Column -->
+      <ng-container matColumnDef="Name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+      </ng-container>
+
+      <!-- Name Column -->
+      <ng-container matColumnDef="Phone">
+        <th mat-header-cell *matHeaderCellDef>Phone</th>
+        <td mat-cell *matCellDef="let element">{{ element.phone }}</td>
+      </ng-container>
+
+      <!-- Weight Column -->
+      <ng-container matColumnDef="Email">
+        <th mat-header-cell *matHeaderCellDef>Email</th>
+        <td mat-cell *matCellDef="let element">{{ element.email }}</td>
+      </ng-container>
+
+      <!-- Symbol Column -->
+      <ng-container matColumnDef="Date">
+        <th mat-header-cell *matHeaderCellDef>Date</th>
+        <td mat-cell *matCellDef="let element">{{ element.date }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="Country">
+        <th mat-header-cell *matHeaderCellDef>Country</th>
+        <td mat-cell *matCellDef="let element">
+          {{ getCountryName(element) }}
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="Company">
+        <th mat-header-cell *matHeaderCellDef>Company</th>
+        <td mat-cell *matCellDef="let element">{{ element.company }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+    </table>
+  </section>
+</div>
