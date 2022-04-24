@@ -5,6 +5,7 @@ import { Hero } from 'src/app/models/hero.model';
 import { CountriesListService } from 'src/app/services/countries-list.service';
 import { FilterConfigService } from 'src/app/services/filter-config.service';
 import { HeroesListService } from 'src/app/services/heroes-list.service';
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -28,13 +29,21 @@ export class DashboardComponent implements OnInit {
   constructor(
     private _filtersConfigService: FilterConfigService,
     private _countriesListService: CountriesListService,
-    private _heroesListService: HeroesListService
+    private _heroesListService: HeroesListService,
+    private _route: ActivatedRoute,
+    private _router: Router
   ) {
   }
 
   ngOnInit(): void {
     this.getFilters();
     this.getHeroes();
+    this.getQueryParams()
+  }
+
+  getQueryParams() {
+    this._route.queryParams
+      .subscribe(params => this.formValues = { ...params })
   }
 
   getFilters() {
@@ -157,11 +166,21 @@ export class DashboardComponent implements OnInit {
       if (this.formValues[key] === '')
         delete this.formValues[key]
     if (!Object.keys(this.formValues).length) this.filteredHeroes = undefined
+    this.saveQueryParams()
+  }
+
+  saveQueryParams() {
+    this._router.navigate([], {
+      relativeTo: this._route,
+      queryParams: this.formValues,
+    });
   }
 
   resetForm() {
     for (let key in this.formValues)
       delete this.formValues[key]
+    this.filteredHeroes = undefined
+    this._router.navigate([])
   }
 
 }
