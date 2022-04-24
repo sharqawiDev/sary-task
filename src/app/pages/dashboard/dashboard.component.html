@@ -48,27 +48,47 @@
     <ng-container *ngFor="let filter of filters; let index">
       <mat-form-field class="form-field" *ngIf="filter.type !== 'dropdown'">
         <mat-label>{{ filter.title }}</mat-label>
-        <input matInput type="{{ filter.type }}" />
+        <input
+          matInput
+          type="{{ filter.type }}"
+          [(ngModel)]="formValues[filter.title]"
+        />
 
-        <mat-icon matSuffix (click)="email = ''" *ngIf="email" class="clear"
+        <mat-icon matSuffix (click)="('')" *ngIf="false" class="clear"
           >close</mat-icon
         >
       </mat-form-field>
       <mat-form-field class="form-field" *ngIf="filter.type === 'dropdown'">
         <mat-label>{{ filter.title }}</mat-label>
-        <mat-select>
+        <mat-select [(ngModel)]="formValues[filter.title]">
           <mat-option
-            value="{{ country.alpha3Code }}"
+            value="{{ country.alpha2Code }}"
             *ngFor="let country of countriesList"
             >{{ country.name }}</mat-option
           >
         </mat-select>
       </mat-form-field>
     </ng-container>
-    <button mat-button class="filter-btn">
-      <mat-icon>filter_list</mat-icon>
-      Filter
-    </button>
+    <div class="action-btns">
+      <button
+        mat-button
+        class="btn filter-btn"
+        type="submit"
+        (click)="filterHeroes()"
+      >
+        <mat-icon>filter_list</mat-icon>
+        Filter
+      </button>
+      <button
+        mat-button
+        class="btn reset-btn"
+        type="reset"
+        (click)="resetForm()"
+      >
+        <mat-icon>refresh</mat-icon>
+        Reset
+      </button>
+    </div>
   </section>
   <section class="results" #resultsDiv>
     <div class="table-title">
@@ -89,7 +109,7 @@
     </div>
     <table
       mat-table
-      [dataSource]="searchResults || sortedHeroes || heroes"
+      [dataSource]="filteredHeroes || searchResults || sortedHeroes || heroes"
       class="mat-elevation-z8"
     >
       <!--- Note that these columns can be defined in any order.

@@ -20,9 +20,11 @@ export class DashboardComponent implements OnInit {
   public heroes: Hero[]
   public sortedHeroes: Hero[] | undefined
   public searchResults: Hero[] | undefined
+  public filteredHeroes: Hero[] | undefined
   public heroesSorted: boolean = false
   public displayedColumns: string[] = ['Name', 'Phone', 'Email', 'Date', 'Country', 'Company'];
   public searchClicked: boolean = false;
+  public formValues: any = {}
   constructor(
     private _filtersConfigService: FilterConfigService,
     private _countriesListService: CountriesListService,
@@ -121,6 +123,45 @@ export class DashboardComponent implements OnInit {
     this.filtersCollapsed = !this.filtersCollapsed
   }
 
+  filterHeroes() {
+    this.filteredHeroes = []
+    for (let key in this.formValues) {
+      this.formValues[key] = this.formValues[key].trim()
+      if (key === 'Name' && this.formValues[key].length)
+        this.filteredHeroes = this.filteredHeroes?.concat(
+          this.heroes.filter(hero => hero.name.includes(this.formValues.Name))
+        )
+      if (key === 'Phone' && this.formValues[key].length)
+        this.filteredHeroes = this.filteredHeroes?.concat(
+          this.heroes.filter(hero => hero.phone.includes(this.formValues.Phone))
+        )
+      if (key === 'Email' && this.formValues[key].length)
+        this.filteredHeroes = this.filteredHeroes?.concat(
+          this.heroes.filter(hero => hero.email.includes(this.formValues.Email))
+        )
+      if (key === 'Company' && this.formValues[key].length)
+        this.filteredHeroes = this.filteredHeroes?.concat(
+          this.heroes.filter(hero => hero.company.includes(this.formValues.Company))
+        )
+      if (key === 'Country' && this.formValues[key].length)
+        this.filteredHeroes = this.filteredHeroes?.concat(
+          this.heroes.filter(hero => hero.country === this.formValues.Country)
+        )
+      if (key === 'Date' && this.formValues[key].length)
+        this.filteredHeroes = this.filteredHeroes?.concat(
+          this.heroes.filter(hero => hero.date === this.formValues.Date)
+        )
+    }
 
+    for (let key in this.formValues)
+      if (this.formValues[key] === '')
+        delete this.formValues[key]
+    if (!Object.keys(this.formValues).length) this.filteredHeroes = undefined
+  }
+
+  resetForm() {
+    for (let key in this.formValues)
+      delete this.formValues[key]
+  }
 
 }
